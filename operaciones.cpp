@@ -63,3 +63,33 @@ float CalcularPromedio(vector<float> costos) {
 	}
 	return (suma/costos.size());
 }
+
+vector<vector<float>> LecturaDistancias(string file) {
+	
+	vector<vector<float>> distancias;
+
+	ifstream archivo(file);
+	string fila;
+	while (getline(archivo, fila)) {
+		stringstream ss(fila);
+		vector<float> valores;
+		float valor;
+		while (ss >> valor) {
+			valores.push_back(valor);
+			if (ss.peek() == ',') {
+				ss.ignore();
+			}
+		}
+		distancias.push_back(valores);
+	}
+
+	return distancias;
+
+	/*for (int i = 0; i < distancias.size(); i++) {
+		for (int j = 0; j < distancias[i].size(); j++) {
+			cout << distancias[i][j] << " ";
+		}
+		cout << endl;
+	}*/
+}
+

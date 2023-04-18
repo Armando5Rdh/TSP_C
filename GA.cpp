@@ -1,15 +1,17 @@
 #include "operaciones.h"
 #include "GA.h"
-
-void GA(int maxit, int popsize, float mutrate, float selection, int Nt) {
+#include "maps.h"
+void GA(int maxit, int popsize, float mutrate, float selection, int Nt, string file) {
 
 	int keep = (selection * popsize);
 	float mincost = -9999999;
 	vector<vector<int>> pop = Arreglo(popsize, Nt);
-
-	//vector<vector<int>> pop = { {0,1,3,2,4},{4,2,1,3,0},{0,3,4,1,2},{3,2,4,1,0},{4,1,0,3,2},{4,3,2,0,1},{2,4,0,1,3},{2,4,0,3,1} };
-	//vector<vector<float>> distancias = { {0, 10, 20, 30, 40}, {10, 0, 15, 25, 35}, {20, 15, 0, 14, 22}, {30, 25, 14, 0, 16}, {40, 35, 22, 16, 0} };
-	vector<vector<float>> distancias = { {0.00,180.00,50.10,21.60,104.00},{178.00,0.00,131.00,192.00,236.00}, {50.20, 135.00, 0.00, 64.50, 108.00},{23.10, 194.00, 63.50, 0.00, 85.30},{105.00, 239.00, 109.00, 86.10, 0.00} };
+	vector<vector<float>> distancias = LecturaDistancias(file);
+	//vector<string> nombres = { "Tijuana","Rosarito","Ensenada","Tecate","Mexicali" };
+	vector<string> nombres = { "Aguascalientes","Mexicali","La paz","Tuxtla Gutierrez","Chihuahua","CDMX",
+								"Colima","Guanajuato","Chilpancingo","Pachuca","Guadalajara","Toluca",
+								"Morelia","Cuernavaca","Tepic","Monterrey","Puebla de zaragoza","Chetumal",
+								"San Luis Potosí","Culiacan","Hermosillo","Ciudad Victoria","Xalapa","Zacatecas"};
 	vector<float> costos = FCostos(pop, distancias);
 	Acomodar(pop, costos);
 
@@ -58,8 +60,6 @@ void GA(int maxit, int popsize, float mutrate, float selection, int Nt) {
 			pick1[i] = distribution(gen);
 			pick2[i] = distribution(gen);
 		}
-
-		
 
 		int ic = 0;
 		vector<int> ma, pa;
@@ -148,13 +148,27 @@ void GA(int maxit, int popsize, float mutrate, float selection, int Nt) {
 
 		costos = FCostos(pop, distancias);
 		Acomodar(pop, costos);
+		minC.push_back(costos[0]);
+		meanC.push_back(CalcularPromedio(costos));
 	}
 
-	for (int i = 0; i < pop.size(); i++) {
+	ofstream archivo("History.csv");
+	archivo << "Min" << "," << "Mean" << endl;
+	for (int i = 0; i < meanC.size(); i++) {
+		archivo <<minC[i] << "," << meanC[i] << endl;
+	}
+
+	archivo.close();
+
+	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < pop[i].size(); j++) {
-			cout << pop[i][j];
+			cout << pop[i][j] <<", ";
 		}
-		cout << endl << costos[i] << endl << endl;;
+		cout << endl << costos[i] << endl << "Ruta:";;
+		for (int j = 0; j < nombres.size(); j++) {
+			cout << nombres[pop[i][j]] << ", ";
+		}
+		cout << "\n\n\n";
 	}
 }
 	
